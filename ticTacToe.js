@@ -62,7 +62,7 @@ function takeCords() {
         }
     }
     console.log(myTwoD);
-    npcO(placed);
+    //npcO(placed);
     checkWin(gameOver);
 }
 
@@ -83,8 +83,8 @@ function npcO() {
             let npc = document.createElement("div");
             npc.className = "npcStyle";
             npc.id = "npcAttack";
-            makeNpcSmart(npc,i,j);
-            //placeElement(npc, i, j);
+            //makeNpcSmart(npc,i,j);
+            placeElement(npc, i, j);
             document.getElementById("gamePlan").appendChild(npc);
             myTwoD[i][j] = "O";
             placed = true;
@@ -151,6 +151,11 @@ function checkWin(gameOver) {
         let countOVertical = 0;
         
         for (var y = 0; y < myTwoD.length; y++) {
+            console.log('here i am');
+            makeNpcSmart(countX, x, y);
+            makeNpcSmart(countO, x, y);
+            makeNpcSmart(countXVertical, x, y);
+            makeNpcSmart(countOVertical, x, y);
 
             if (myTwoD[y][x] == 'X') {
                 countX++;
@@ -241,10 +246,7 @@ function checkWin(gameOver) {
                         }
                     }
              }            
-                // makeNpcSmart(countX, x, y);
-                // makeNpcSmart(countO, x, y);
-                // makeNpcSmart(countXVertical, x, y);
-                // makeNpcSmart(countOVertical, x, y);
+
                 
             }
         }
@@ -342,14 +344,11 @@ function makeNpcSmart(count, x, y) {
             console.log('made npc smart y--')
             console.log(myTwoD[x][y--])
         }
-        else
-        {        
-
-        let npc = document.createElement("div");
-        npc.className = "npcStyle";
-        npc.id = "npcAttack";
-        placeElement(npc, x, y);
     }
+    else
+    {      
+        console.log('DID I GO HERE?');  
+npcO();
 }
 
 
