@@ -1,7 +1,8 @@
 var myTwoD = new Array(3);
 
-/**This function creates a 2D array to build up a gameplan
- * in the back code.
+
+/**This function creates a 2D array to build up a gameplan.
+ * 
  * Length is 3 , and for each index it puts in a new array.
  * And in the next 2 loops it places spaces in each position.
  */
@@ -78,10 +79,12 @@ function npcO() {
         var i = Math.floor(Math.random() * 3);
         var j = Math.floor(Math.random() * 3);
         if (myTwoD[i][j] == ' ' && placed == false) {
+            console.log('moving')
             let npc = document.createElement("div");
             npc.className = "npcStyle";
             npc.id = "npcAttack";
-            placeElement(npc, i, j);
+            makeNpcSmart(npc,i,j);
+            //placeElement(npc, i, j);
             document.getElementById("gamePlan").appendChild(npc);
             myTwoD[i][j] = "O";
             placed = true;
@@ -91,44 +94,45 @@ function npcO() {
 
 /**
  * This function sets element position depending on what input it gets
- * @param {Element} myNewX = html element  TODO: Rename parameter, make more 'general'
+ * @param {Element} createdElem = html element  TODO: Rename parameter, make more 'general'
  * @param {int} x = gets the int from array index
  * @param {int} y = gets the int from array index
  **/
-function placeElement(myNewX, x, y) {
+function placeElement(createdElem, x, y) {
     if (x == 0 && y == 0) {
-        myNewX.style.top = "190px";
-        myNewX.style.left = "140px";
+        createdElem.style.top = "190px";
+        createdElem.style.left = "140px";
     } else if (x == 0 && y == 1) {
-        myNewX.style.top = "190px";
-        myNewX.style.left = "400px";
+        createdElem.style.top = "190px";
+        createdElem.style.left = "400px";
     } else if (x == 0 && y == 2) {
-        myNewX.style.top = "190px";
-        myNewX.style.left = "680px";
+        createdElem.style.top = "190px";
+        createdElem.style.left = "680px";
     } else if (x == 1 && y == 0) {
-        myNewX.style.top = "320px";
-        myNewX.style.left = "140px";
+        createdElem.style.top = "320px";
+        createdElem.style.left = "140px";
     } else if (x == 1 && y == 1) {
-        myNewX.style.top = "320px";
-        myNewX.style.left = "400px";
+        createdElem.style.top = "320px";
+        createdElem.style.left = "400px";
     } else if (x == 1 && y == 2) {
-        myNewX.style.top = "320px";
-        myNewX.style.left = "680px";
+        createdElem.style.top = "320px";
+        createdElem.style.left = "680px";
     } else if (x == 2 && y == 0) {
-        myNewX.style.top = "500px";
-        myNewX.style.left = "140px";
+        createdElem.style.top = "500px";
+        createdElem.style.left = "140px";
     } else if (x == 2 && y == 1) {
-        myNewX.style.top = "500px";
-        myNewX.style.left = "400px";
+        createdElem.style.top = "500px";
+        createdElem.style.left = "400px";
     } else if (x == 2 && y == 2) {
-        myNewX.style.top = "500px";
-        myNewX.style.left = "680px";
+        createdElem.style.top = "500px";
+        createdElem.style.left = "680px";
     } else {
         alert("error positioning")
     }
 }
 /**This function checks if you or npc have 3 in a row.
  * Using local variables to count how many of same on row/line.
+ * It checks every position and counts them for each move you make.
  * 
  * @param {bool} won = to make the loop only enter once if a win occure in \ or /
  * @param {int} countX = Checks and sums up how many X are on the horizontal line
@@ -137,33 +141,32 @@ function placeElement(myNewX, x, y) {
  * @param {int} countOVertical = Checks and sums up how many O are on the Vertical line
  * 
  */
-function checkWin() {
+function checkWin(gameOver) {
     let won = false;
-
+    
     for (var x = 0; x < myTwoD.length; x++) {
         let countX = 0;
         let countO = 0;
         let countXVertical = 0;
         let countOVertical = 0;
+        
         for (var y = 0; y < myTwoD.length; y++) {
-            // makeNpcSmart(countX, x, y);
-            // makeNpcSmart(countO, x, y);
-            // makeNpcSmart(countXVertical, x, y);
-            // makeNpcSmart(countOVertical, x, y);
 
-            if (myTwoD[x][y] == 'X') {
+            if (myTwoD[y][x] == 'X') {
                 countX++;
-                console.log(countX)
+                console.log('horizon: ',countX)
                 if (countX == 3) {
-                    alert("You won the game");
+                    alert("You won the game 1 ");
+                    gameOver = true;
                     winScreen();
                     break;
                 }
-            } else if (myTwoD[x][y] == 'O') {
+            } else if (myTwoD[y][x] == 'O') {
                 countO++;
-                console.log(countO);
+                console.log('horizon: ',countO);
                 if (countO == 3) {
-                    alert("NPC WON YOU NOOBIE");
+                    alert("NPC WON YOU NOOBIE 2");
+                    gameOver = true;
                     lossScreen();
                     break;
                 }
@@ -172,7 +175,8 @@ function checkWin() {
                 countXVertical++;
                 console.log(`vert X: ${countXVertical}`)
                 if (countXVertical == 3) {
-                    alert('You won the game')
+                    alert('You won the game 3')
+                    gameOver = true;
                     winScreen();
                     break;
                 }
@@ -180,7 +184,8 @@ function checkWin() {
                 countOVertical++;
                 console.log(`vert Y: ${countOVertical}`)
                 if (countOVertical == 3) {
-                    alert('NPC WON YOU NOOBIE')
+                    alert('NPC WON YOU NOOBIE 4')
+                    gameOver = true;
                     lossScreen();
                     break;
                 }
@@ -197,6 +202,7 @@ function checkWin() {
                         if (myTwoD[2][2] == 'X') {
                             alert('player won');
                             won = true;
+                            gameOver = true;
                             winScreen();
                             break;
                         }
@@ -207,6 +213,7 @@ function checkWin() {
                         if (myTwoD[2][2] == 'O') {
                             alert('NPC won');
                             won = true;
+                            gameOver = true;
                             lossScreen();
                             break;
                         }
@@ -217,6 +224,7 @@ function checkWin() {
                         if (myTwoD[2][0] == 'X') {
                             alert('player won');
                             won = true;
+                            gameOver = true;
                             winScreen();
                             break;
                         }
@@ -227,15 +235,22 @@ function checkWin() {
                         if (myTwoD[2][0] == 'O') {
                             alert('NPC won');
                             won = true;
+                            gameOver = true;
                             lossScreen();
                             break;
                         }
                     }
-                }
+             }            
+                // makeNpcSmart(countX, x, y);
+                // makeNpcSmart(countO, x, y);
+                // makeNpcSmart(countXVertical, x, y);
+                // makeNpcSmart(countOVertical, x, y);
+                
             }
         }
     }
 }
+
 /**This function just gives the user a new screen and shows 
  * that the user have won the game! 
  */
@@ -244,12 +259,7 @@ function winScreen() {
     document.getElementById("inputAndBtn").remove();
 
     let winning = document.createElement("div");
-    winning.style.width = "500px";
-    winning.style.height = "500px";
-    winning.style.color = "green";
-    winning.style.fontSize = "44px";
-    winning.style.position = "absolute";
-    winning.innerHTML = "YOU WON THE GAME <Br> YOU LUCKY BAST*RD<Br><Br><Br><Br> **f5 to restart**"
+    styleWinScreen(winning);
     document.getElementById("ifGameOver").appendChild(winning);
 
 }
@@ -260,14 +270,9 @@ function lossScreen() {
     document.getElementById("gamePlan").remove();
     document.getElementById("inputAndBtn").remove();
 
-    let winning = document.createElement("div");
-    winning.style.width = "500px";
-    winning.style.height = "500px";
-    winning.style.color = "red";
-    winning.style.fontSize = "44px";
-    winning.style.position = "absolute";
-    winning.innerHTML = "YOU LOST THE GAME <Br> YOU POOR BAST*RD<Br><Br><Br><Br> **f5 to restart**"
-    document.getElementById("ifGameOver").appendChild(winning);
+    let loss = document.createElement("div");
+    styleLossScreen(loss);
+ document.getElementById("ifGameOver").appendChild(loss);
 
 }
 /**This is just to make code "cleaner" and is used to delete input box text */
@@ -315,21 +320,55 @@ window.onload = function() {
 }
 
 function makeNpcSmart(count, x, y) {
-    if (count == 2) {
-        let npc = document.createElement("div");
-        npc.className = "npcStyle";
-        npc.id = "npcAttack";
+   
+
+    console.log(count)
+  if(count == 2){
         if (myTwoD[x][y++] != 'X' || 'O') {
             y++;
-            placeElement(npc, x, y)
+            let npc = document.createElement("div");
+            npc.className = "npcStyle";
+            npc.id = "npcAttack";
+            placeElement(count, x, y)
             console.log('made npx smart y++')
+            console.log(myTwoD[x][y++])
 
         } else if (myTwoD[x][y--] != 'X' || 'O') {
             y--;
-            placeElement(npc, x, y)
+            let npc = document.createElement("div");
+            npc.className = "npcStyle";
+            npc.id = "npcAttack";
+            placeElement(count, x, y)
             console.log('made npc smart y--')
+            console.log(myTwoD[x][y--])
         }
+        else
+        {        
 
+        let npc = document.createElement("div");
+        npc.className = "npcStyle";
+        npc.id = "npcAttack";
+        placeElement(npc, x, y);
     }
+}
 
+
+}
+function styleWinScreen(winning){
+    winning.style.width = "500px";
+    winning.style.height = "500px";
+    winning.style.color = "green";
+    winning.style.fontSize = "44px";
+    winning.style.position = "absolute";
+    winning.innerHTML = "YOU WON THE GAME <Br> YOU LUCKY BAST*RD<Br><Br><Br><Br> **f5 to restart**"
+}
+
+function styleLossScreen(loss){
+    loss.style.width = "500px";
+    loss.style.height = "500px";
+    loss.style.color = "red";
+    loss.style.fontSize = "44px";
+    loss.style.position = "absolute";
+    loss.innerHTML = "YOU LOST THE GAME <Br> YOU POOR BAST*RD<Br><Br><Br><Br> **f5 to restart**"
+   
 }
