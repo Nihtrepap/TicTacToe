@@ -31,7 +31,6 @@ window.onload = function() {
         document.getElementById("gamePlan").appendChild(x);
         move += 150;
     }
-
     var moveY = 150;
     for (i = 1; i < 4; i++) {
         let x = document.createElement("div");
@@ -50,8 +49,6 @@ window.onload = function() {
         moveY += 290;
     }
 }
-
-
 /**This function creates a 2D array to build up a gameplan
  * in the back code.
  * Length is 3 , and for each index it puts in a new array.
@@ -68,9 +65,7 @@ function getArray(arr) {
     }
     console.log(this.myTwoD)
 }
-
 getArray(myTwoD);
-
 /**This function takes input from player from input elements.
  * It is also the function that takes care of everything that 
  * is happening. Calling all the other functions within.
@@ -112,12 +107,12 @@ function takeCords() {
             alert('Koordinat är tagen');
         }
     }
-    checkWin();
     makeNpcSmart();
     console.log('what happend to bool smart = ',smart)
     if (smart == false && won == false) {
         npcO();
     }
+    checkWin();
     smart = false;
     console.log('what happend to bool after change smart = ',smart)
    
@@ -131,11 +126,14 @@ function takeCords() {
  */
 function npcO() {
     let placed = false;
+    let checkPositions = 0;
 
     while (placed == false) {
         var i = Math.floor(Math.random() * 3);
         var j = Math.floor(Math.random() * 3);
         if (myTwoD[i][j] == ' ' && placed == false) {
+            console.log('check positions : ',checkPositions)
+            checkPositions++;
             let npc = document.createElement("div");
             npc.className = "npcStyle";
             npc.id = "npcAttack";
@@ -143,6 +141,9 @@ function npcO() {
             document.getElementById("gamePlan").appendChild(npc);
             myTwoD[i][j] = "O";
             placed = true;
+        }else if(checkPositions == 9){
+            alert('draw');
+            break;
         }
 
     }
@@ -217,7 +218,6 @@ function checkWin() {
                     winScreen();
                     break;
                 }
-
             } else if (myTwoD[x][y] == 'O') {
                 countO++;
                 console.log('O :', countO);
@@ -227,8 +227,6 @@ function checkWin() {
                     lossScreen();
                     break;
                 }
-
-
             }
             if (myTwoD[y][x] == 'X') {
                 countXVertical++;
@@ -249,7 +247,6 @@ function checkWin() {
                     break;
                 }
             }
-
             /**
                         These conditions below is to check if you get 
                         3 in a row like this / or \ . 
@@ -297,10 +294,7 @@ function checkWin() {
                         }
                     }
                 }
-
             }
-
-
         }
     }
 }
@@ -343,8 +337,6 @@ function removeInput() {
     document.getElementById('myYInput').value = "";
     document.getElementById('myXInput').value = "";
 }
-
-
 /**
  * This function is to make npc a litle bit smarter.
  * It checks if player has 2 in a row, but only check
