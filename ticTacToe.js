@@ -1,4 +1,56 @@
+/**
+ * For this program these variables are used
+ * 
+ * @param {array} myTwoD = an 2d array to keep track of positions
+ * @param {bool} smart = is used to see if the smartNpc function has been run
+ * @param {bool} won = is used to see if game is won, and therefor stop contiune reading code
+ */
+
 var myTwoD = new Array(3);
+var smart = false;
+var won = false;
+
+/**this function sets up the game plan numbers on top and side.
+ * It styles them and then inputs them onload of the program.
+ * 
+*/
+window.onload = function() {
+    var move = 180;
+    for (i = 1; i < 4; i++) {
+        let x = document.createElement("div");
+        x.style.id = `num${i}`;
+        x.style.width = "50px";
+        x.style.height = "50px";
+        x.style.backgroundColor = "white";
+        x.style.top = `${move}px`;
+        x.style.position = "absolute";
+        x.style.boxShadow = "2px 2px 20px 2px darkCyan";
+        x.style.fontSize = "42px";
+        x.style.textAlign = "center";
+        x.innerHTML = `<strong>${i}</strong>`;
+        document.getElementById("gamePlan").appendChild(x);
+        move += 150;
+    }
+
+    var moveY = 150;
+    for (i = 1; i < 4; i++) {
+        let x = document.createElement("div");
+        x.style.id = `num${i}`;
+        x.style.width = "50px";
+        x.style.height = "40px";
+        x.style.backgroundColor = "white";
+        x.style.boxShadow = "1px 2px 20px 1px darkCyan";
+        x.style.left = `${moveY}px`
+        x.style.top = `107px`;
+        x.style.position = "absolute";
+        x.style.fontSize = "42px";
+        x.style.textAlign = "center"
+        x.innerHTML = `<strong>${i}</strong>`;
+        document.getElementById("gamePlan").appendChild(x);
+        moveY += 290;
+    }
+}
+
 
 /**This function creates a 2D array to build up a gameplan
  * in the back code.
@@ -35,14 +87,14 @@ getArray(myTwoD);
  */
 function takeCords() {
     let placed = false;
-    let gameOver = false;
-    while (placed == false) {
+
+    while (placed == false && won == false) {
         let myX = document.getElementById('myXInput').value;
         let myY = document.getElementById('myYInput').value;
         myX--;
         myY--;
-        console.log(myX, myY)
-        console.log(myTwoD)
+        console.log(myX, myY);
+        console.log(myTwoD);
         if (myTwoD[myX][myY] == " ") {
             myTwoD[myX][myY] = "X";
             let myNewX = document.createElement("div");
@@ -60,9 +112,15 @@ function takeCords() {
             alert('Koordinat är tagen');
         }
     }
-    console.log(myTwoD);
-    npcO(placed);
-    checkWin(gameOver);
+    checkWin();
+    makeNpcSmart();
+    console.log('what happend to bool smart = ',smart)
+    if (smart == false && won == false) {
+        npcO();
+    }
+    smart = false;
+    console.log('what happend to bool after change smart = ',smart)
+   
 }
 
 /**This function is for ""NPC" to check if a place in the array is empty.
@@ -86,9 +144,9 @@ function npcO() {
             myTwoD[i][j] = "O";
             placed = true;
         }
+
     }
 }
-
 /**
  * This function sets element position depending on what input it gets
  * @param {Element} myNewX = html element  TODO: Rename parameter, make more 'general'
@@ -138,53 +196,60 @@ function placeElement(myNewX, x, y) {
  * 
  */
 function checkWin() {
-    let won = false;
 
     for (var x = 0; x < myTwoD.length; x++) {
         let countX = 0;
         let countO = 0;
         let countXVertical = 0;
         let countOVertical = 0;
-        for (var y = 0; y < myTwoD.length; y++) {
-            // makeNpcSmart(countX, x, y);
-            // makeNpcSmart(countO, x, y);
-            // makeNpcSmart(countXVertical, x, y);
-            // makeNpcSmart(countOVertical, x, y);
+        //console.log(countx, countO, countOVertical, countXVertical)
 
+
+        for (var y = 0; y < myTwoD.length; y++) {
+            console.log('checking x and y', x, y)
+    
             if (myTwoD[x][y] == 'X') {
                 countX++;
-                console.log(countX)
+                console.log('X :', countX);
                 if (countX == 3) {
                     alert("You won the game");
+                    won = true;
                     winScreen();
                     break;
                 }
+
             } else if (myTwoD[x][y] == 'O') {
                 countO++;
-                console.log(countO);
+                console.log('O :', countO);
                 if (countO == 3) {
-                    alert("NPC WON YOU NOOBIE");
+                    alert("NPC WON");
+                    won = true;
                     lossScreen();
                     break;
                 }
+
+
             }
-            if (myTwoD[x][y] == 'X') {
+            if (myTwoD[y][x] == 'X') {
                 countXVertical++;
                 console.log(`vert X: ${countXVertical}`)
                 if (countXVertical == 3) {
-                    alert('You won the game')
+                    alert('You won')
+                    won = true;
                     winScreen();
                     break;
                 }
-            } else if (myTwoD[x][y] == 'O') {
+            } else if (myTwoD[y][x] == 'O') {
                 countOVertical++;
                 console.log(`vert Y: ${countOVertical}`)
                 if (countOVertical == 3) {
-                    alert('NPC WON YOU NOOBIE')
+                    alert('NPC WON')
+                    won = true;
                     lossScreen();
                     break;
                 }
             }
+
             /**
                         These conditions below is to check if you get 
                         3 in a row like this / or \ . 
@@ -192,7 +257,7 @@ function checkWin() {
                         so it wont get into the condition checking unnecessary
                         */
             if (won == false) {
-                if (myTwoD[0][0] == 'X' && won == false) {
+                if (myTwoD[0][0] == 'X') {
                     if (myTwoD[1][1] == 'X') {
                         if (myTwoD[2][2] == 'X') {
                             alert('player won');
@@ -202,7 +267,7 @@ function checkWin() {
                         }
                     }
                 }
-                if (myTwoD[0][0] == 'O' && won == false) {
+                if (myTwoD[0][0] == 'O') {
                     if (myTwoD[1][1] == 'O') {
                         if (myTwoD[2][2] == 'O') {
                             alert('NPC won');
@@ -212,7 +277,7 @@ function checkWin() {
                         }
                     }
                 }
-                if (myTwoD[0][2] == 'X' && won == false) {
+                if (myTwoD[0][2] == 'X') {
                     if (myTwoD[1][1] == 'X') {
                         if (myTwoD[2][0] == 'X') {
                             alert('player won');
@@ -222,7 +287,7 @@ function checkWin() {
                         }
                     }
                 }
-                if (myTwoD[0][2] == 'O' && won == false) {
+                if (myTwoD[0][2] == 'O') {
                     if (myTwoD[1][1] == 'O') {
                         if (myTwoD[2][0] == 'O') {
                             alert('NPC won');
@@ -232,7 +297,10 @@ function checkWin() {
                         }
                     }
                 }
+
             }
+
+
         }
     }
 }
@@ -249,12 +317,12 @@ function winScreen() {
     winning.style.color = "green";
     winning.style.fontSize = "44px";
     winning.style.position = "absolute";
-    winning.innerHTML = "YOU WON THE GAME <Br> YOU LUCKY BAST*RD<Br><Br><Br><Br> **f5 to restart**"
+    winning.innerHTML = "YOU WON THE GAME <Br> WELL PLAYED HUMAN<Br><Br><Br><Br> **f5 to restart**"
     document.getElementById("ifGameOver").appendChild(winning);
 
 }
 /**This function just gives the user a new screen and shows 
- * that the user have lost the game! 
+ * that the user have lost the game!
  */
 function lossScreen() {
     document.getElementById("gamePlan").remove();
@@ -266,7 +334,7 @@ function lossScreen() {
     winning.style.color = "red";
     winning.style.fontSize = "44px";
     winning.style.position = "absolute";
-    winning.innerHTML = "YOU LOST THE GAME <Br> YOU POOR BAST*RD<Br><Br><Br><Br> **f5 to restart**"
+    winning.innerHTML = "NP WON AND YOU LOST! <Br> YOU CAN DO BETTER !<Br><Br><Br><Br> **f5 to restart**"
     document.getElementById("ifGameOver").appendChild(winning);
 
 }
@@ -276,60 +344,39 @@ function removeInput() {
     document.getElementById('myXInput').value = "";
 }
 
-/**this function sets up the game plan numbers on top and side */
-window.onload = function() {
-    var move = 180;
-    for (i = 1; i < 4; i++) {
-        let x = document.createElement("div");
-        x.style.id = `num${i}`;
-        x.style.width = "50px";
-        x.style.height = "50px";
-        x.style.backgroundColor = "white";
-        x.style.top = `${move}px`;
-        x.style.position = "absolute";
-        x.style.boxShadow = "2px 2px 20px 2px darkCyan";
-        x.style.fontSize = "42px";
-        x.style.textAlign = "center";
-        x.innerHTML = `<strong>${i}</strong>`;
-        document.getElementById("gamePlan").appendChild(x);
-        move += 150;
-    }
 
-    var moveY = 150;
-    for (i = 1; i < 4; i++) {
-        let x = document.createElement("div");
-        x.style.id = `num${i}`;
-        x.style.width = "50px";
-        x.style.height = "40px";
-        x.style.backgroundColor = "white";
-        x.style.boxShadow = "1px 2px 20px 1px darkCyan";
-        x.style.left = `${moveY}px`
-        x.style.top = `107px`;
-        x.style.position = "absolute";
-        x.style.fontSize = "42px";
-        x.style.textAlign = "center"
-        x.innerHTML = `<strong>${i}</strong>`;
-        document.getElementById("gamePlan").appendChild(x);
-        moveY += 290;
-    }
-}
+/**
+ * This function is to make npc a litle bit smarter.
+ * It checks if player has 2 in a row, but only check
+ * last position of the array. Therefor not very smart yet.
+ * 
+ * @param {number} check = counts the X on one row, if 2 appears then input element on the next one
+ */
+function makeNpcSmart() {
 
-function makeNpcSmart(count, x, y) {
-    if (count == 2) {
-        let npc = document.createElement("div");
-        npc.className = "npcStyle";
-        npc.id = "npcAttack";
-        if (myTwoD[x][y++] != 'X' || 'O') {
-            y++;
-            placeElement(npc, x, y)
-            console.log('made npx smart y++')
+    let check = 0;
 
-        } else if (myTwoD[x][y--] != 'X' || 'O') {
-            y--;
-            placeElement(npc, x, y)
-            console.log('made npc smart y--')
+    for(row=0; row<3; row++){
+        check = 0;
+        for(col=0; col<3; col++){
+            if(myTwoD[row][col] == 'X'){
+                check++;
+                console.log('smart check = ',check)
+                if(check == 2 && smart ==false ){
+                    console.log('col plus 1 = ',col+1)
+                   if(myTwoD[row][col+1] == ' '){
+                    let npc = document.createElement("div");
+                    npc.className = "npcStyle";
+                    npc.id = "npcAttack";
+                    col++;
+                    console.log('palce to put in red = ', row, col)
+                    placeElement(npc, row, col);
+                    document.getElementById("gamePlan").appendChild(npc);
+                    myTwoD[row][col] = 'O';
+                    smart = true;
+                   }
+                }
+            }
         }
-
     }
-
 }
